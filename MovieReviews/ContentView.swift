@@ -1,22 +1,42 @@
-//  
-//  ContentView.swift
-//  MovieReviews
+//  /*
 //
-//  Created by Elaidzha Shchukin on 30.11.2023.
+//  Project: MovieReviews
+//  File: ContentView.swift
+//  Created by: Elaidzha Shchukin
+//  Date: 30.11.2023
 //
+//  */
 
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var viewModel = MovieDBViewModel()
     var body: some View {
+        
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+           
         }
         .padding()
+        .onAppear {
+            viewModel.loadTrending()
+        }
     }
+}
+
+class MovieDBViewModel: ObservableObject {
+    @Published var homeScreen: [TrendingItem] = []
+    
+    func loadTrending() {
+        
+    }
+}
+
+struct TrendingItem: Identifiable, Decodable {
+    let id: Int
+    let adult: Bool
+    let poster_path: String
+    let title: String
+    
 }
 
 #Preview {

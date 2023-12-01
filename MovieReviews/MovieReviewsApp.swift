@@ -1,9 +1,11 @@
+//  /*
 //
-//  MovieReviewsApp.swift
-//  MovieReviews
+//  Project: MovieReviews
+//  File: MovieReviewsApp.swift
+//  Created by: Elaidzha Shchukin
+//  Date: 30.11.2023
 //
-//  Created by Elaidzha Shchukin on 30.11.2023.
-//
+//  */
 
 import SwiftUI
 
