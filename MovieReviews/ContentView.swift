@@ -10,35 +10,33 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var viewModel = MovieDBViewModel()
     var body: some View {
         
-        VStack {
-           
-        }
-        .padding()
-        .onAppear {
-            viewModel.loadTrending()
+        ZStack(alignment: .top) {
+            LinearGradient(colors: [Color.white, Color.black],
+                           startPoint: .topLeading,
+                           endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+            
+            VStack(alignment: .leading) {
+                Image("seven")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 350, height: 450)
+                    .cornerRadius(25)
+                
+                Text("The Last Kingdom: Seven Kings Must Die")
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("British historical drama")
+                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                    .foregroundStyle(.gray, .opacity(0.4))
+            }
         }
     }
-}
-
-class MovieDBViewModel: ObservableObject {
-    @Published var homeScreen: [TrendingItem] = []
-    
-    func loadTrending() {
-        
-    }
-}
-
-struct TrendingItem: Identifiable, Decodable {
-    let id: Int
-    let adult: Bool
-    let poster_path: String
-    let title: String
-    
 }
 
 #Preview {
     ContentView()
 }
+
