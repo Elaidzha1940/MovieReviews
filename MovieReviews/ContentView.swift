@@ -10,7 +10,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Исправлены данные описания для фильмов
+    
     @State var movies = [
         Movie(id: 0, name: "The Last Kingdom: Seven Kings Must Die", description: "British historical drama", poster: "seven", offset: 0),
         Movie(id: 1, name: "Luther", description: "The Fallen Sun, based on award-winning British TV Series", poster: "luther", offset: 0),
@@ -42,52 +42,54 @@ struct ContentView: View {
                         .resizable()
                         .scaledToFill()
                         .frame(
-                            width: (UIScreen.main.bounds.width - 50) - 60,
-                            height: (UIScreen.main.bounds.height / 2) - CGFloat(movie.id - move) * 40
+                            width: (UIScreen.main.bounds.width - 15) - 35,
+                            height: (UIScreen.main.bounds.height / 2) - CGFloat(movie.id - move) * 75
                         )
                         .cornerRadius(25)
                         .shadow(radius: 10)
-                        .offset(x: movie.id - move <= 2 ? CGFloat(movie.id - move) * 50 : 60)
+                        .offset(x: movie.id - move <= 2 ? CGFloat(movie.id - move) * 20 : 60)
                         .padding()
                     
                     Text("Movie name: \(movie.name)")
                         .font(.system(size: 18, weight: .semibold, design: .rounded))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
-                    Text(movie.description)
+                    Text("Movie description: \(movie.description)")
                         .font(.system(size: 15, weight: .medium, design: .rounded))
                         .foregroundStyle(.gray, .opacity(0.4))
+                        .multilineTextAlignment(.center)
+
                 }
                 .offset(x: movie.offset)
                 .gesture(DragGesture().onChanged { value in
-                    withAnimation {
+                    withAnimation(.spring) {
                         if value.translation.width < 0 {
                             if -value.translation.width < 0 && movie.id != movies.last!.id {
                                 movies[movie.id].offset = value.translation.width
                             } else {
                                 if movie.id > 0 {
-                                    movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60) + value.translation.width
+                                    movies[movie.id].offset = -((UIScreen.main.bounds.width - 15) + 35) + value.translation.width
                                 }
                             }
                         }
                     }
                 }.onEnded { value in
-                    withAnimation {
+                    withAnimation(.easeIn) {
                         if value.translation.width < 0 {
-                            if -value.translation.width > 150 && movie.id != movies.last!.id {
-                                movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60)
+                            if -value.translation.width > 180 && movie.id != movies.last!.id {
+                                movies[movie.id].offset = -((UIScreen.main.bounds.width - 15) + 35)
                                 move += 1
                             } else {
                                 movies[movie.id].offset = 0
                             }
                         } else {
                             if movie.id > 0 {
-                                movies[movie.id - 1].offset = -((UIScreen.main.bounds.width - 20) + 35) + value.translation.width
-                                if value.translation.width > 150 {
+                                movies[movie.id - 1].offset = -((UIScreen.main.bounds.width - 15) + 35) + value.translation.width
+                                if value.translation.width > 180 {
                                     movies[movie.id - 1].offset = 0
                                     move -= 1
                                 } else {
-                                    movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60)
+                                    movies[movie.id - 1].offset = -((UIScreen.main.bounds.width - 15) + 35)
                                 }
                             }
                         }
@@ -97,7 +99,6 @@ struct ContentView: View {
         }
     }
 }
-
 
 #Preview {
     ContentView()
