@@ -10,6 +10,24 @@
 import SwiftUI
 
 struct ContentView: View {
+    // Исправлены данные описания для фильмов
+    @State var movies = [
+        Movie(id: 0, name: "The Last Kingdom: Seven Kings Must Die", description: "British historical drama", poster: "seven", offset: 0),
+        Movie(id: 1, name: "Luther", description: "The Fallen Sun, based on award-winning British TV Series", poster: "luther", offset: 0),
+        Movie(id: 2, name: "Rustin", description: "American biographical drama", poster: "rustin", offset: 0),
+        Movie(id: 3, name: "Kandahar", description: "CIA undercover officer", poster: "kandahar", offset: 0)
+    ]
+    
+    @State var move = 0
+    
+    struct Movie: Identifiable {
+        var id: Int
+        var name: String
+        var description: String
+        var poster: String
+        var offset: CGFloat
+    }
+    
     var body: some View {
         
         ZStack(alignment: .top) {
@@ -18,25 +36,69 @@ struct ContentView: View {
                            endPoint: .bottomTrailing)
             .ignoresSafeArea()
             
-            VStack(alignment: .leading) {
-                Image("seven")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 350, height: 450)
-                    .cornerRadius(25)
-                
-                Text("The Last Kingdom: Seven Kings Must Die")
-                    .font(.system(size: 20, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
-                Text("British historical drama")
-                    .font(.system(size: 18, weight: .medium, design: .rounded))
-                    .foregroundStyle(.gray, .opacity(0.4))
+            ForEach(movies.reversed()) { movie in
+                VStack(alignment: .center) {
+                    Image(movie.poster)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(
+                            width: (UIScreen.main.bounds.width - 50) - 60,
+                            height: (UIScreen.main.bounds.height / 2) - CGFloat(movie.id - move) * 40
+                        )
+                        .cornerRadius(25)
+                        .shadow(radius: 10)
+                        .offset(x: movie.id - move <= 2 ? CGFloat(movie.id - move) * 50 : 60)
+                        .padding()
+                    
+                    Text("Movie name: \(movie.name)")
+                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                    Text(movie.description)
+                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .foregroundStyle(.gray, .opacity(0.4))
+                }
+                .offset(x: movie.offset)
+                .gesture(DragGesture().onChanged { value in
+                    withAnimation {
+                        if value.translation.width < 0 {
+                            if -value.translation.width < 0 && movie.id != movies.last!.id {
+                                movies[movie.id].offset = value.translation.width
+                            } else {
+                                if movie.id > 0 {
+                                    movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60) + value.translation.width
+                                }
+                            }
+                        }
+                    }
+                }.onEnded { value in
+                    withAnimation {
+                        if value.translation.width < 0 {
+                            if -value.translation.width > 150 && movie.id != movies.last!.id {
+                                movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60)
+                                move += 1
+                            } else {
+                                movies[movie.id].offset = 0
+                            }
+                        } else {
+                            if movie.id > 0 {
+                                movies[movie.id - 1].offset = -((UIScreen.main.bounds.width - 20) + 35) + value.translation.width
+                                if value.translation.width > 150 {
+                                    movies[movie.id - 1].offset = 0
+                                    move -= 1
+                                } else {
+                                    movies[movie.id].offset = -((UIScreen.main.bounds.width - 50) + 60)
+                                }
+                            }
+                        }
+                    }
+                })
             }
         }
     }
 }
 
+
 #Preview {
     ContentView()
 }
-
